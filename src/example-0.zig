@@ -32,7 +32,7 @@ pub fn main() !void {
     defer c.g_object_unref(app);
 
     // using reimplementation
-    _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, activate), null);
+    _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, &activate), null);
 
     const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, app), 0, null);
     if (status != 0)

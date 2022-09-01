@@ -45,21 +45,21 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = user_data;
 
     const window: *c.GtkWidget = c.gtk_application_window_new(app);
-    c.gtk_window_set_title(@ptrCast(*c.GtkWindow, window), "Window");
+    c.gtk_window_set_title(@ptrCast(*c.GtkWindow, &window), "Window");
 
     const grid: *c.GtkWidget = c.gtk_grid_new();
 
-    c.gtk_window_set_child(@ptrCast(*c.GtkWindow, window), grid);
+    c.gtk_window_set_child(@ptrCast(*c.GtkWindow, &window), grid);
 
     var button: *c.GtkWidget = c.gtk_button_new_with_label("Button 1");
     // using reimplementation
-    _ = _g_signal_connect(button, "clicked", @ptrCast(c.GCallback, print_hello), null);
+    _ = _g_signal_connect(button, "clicked", @ptrCast(c.GCallback, &print_hello), null);
 
     c.gtk_grid_attach(@ptrCast(*c.GtkGrid, grid), button, 0, 0, 1, 1);
 
     button = c.gtk_button_new_with_label("Button 2");
     // using reimplementation
-    _ = _g_signal_connect(button, "clicked", @ptrCast(c.GCallback, print_hello), null);
+    _ = _g_signal_connect(button, "clicked", @ptrCast(c.GCallback, &print_hello), null);
 
     c.gtk_grid_attach(@ptrCast(*c.GtkGrid, grid), button, 1, 0, 1, 1);
 
@@ -68,7 +68,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = _g_signal_connect_swapped(
         button,
         "clicked",
-        @ptrCast(c.GCallback, c.gtk_window_destroy),
+        @ptrCast(c.GCallback, &c.gtk_window_destroy),
         window,
     );
 
@@ -82,9 +82,9 @@ pub fn main() !void {
     defer c.g_object_unref(app);
 
     // using reimplementation
-    _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, activate), null);
+    _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, &activate), null);
 
-    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, app), 0, null);
+    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, &app), 0, null);
     if (status != 0)
         return error.Error;
 }
