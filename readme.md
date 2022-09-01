@@ -15,4 +15,4 @@ zig build example0
 
 # Dependencies
   - GTK4
-  - Zig 0.9.1 (+?)
+  - Lastest zig dev build
