@@ -31,7 +31,7 @@ build-job:       # This job runs in the build stage, which runs first.
   stage: build
   before_script:
     - pacman -Syu --noconfirm
-    - pacman -S git base-devel wget --noconfirm --needed
+    - pacman -S git gtk4 base-devel wget --noconfirm --needed
     - *echo_template
     - wget https://gitlab.com/binarycraft/packages/-/jobs/2963386497/artifacts/raw/zig-dev-bin-20220901-1-x86_64.pkg.tar.zst -O /tmp/zig.pkg.tar.zst
     - pacman -U /tmp/zig.pkg.tar.zst --noconfirm
