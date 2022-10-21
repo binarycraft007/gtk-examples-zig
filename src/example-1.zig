@@ -34,7 +34,7 @@ pub fn _g_signal_connect_swapped(
     );
 }
 
-pub fn print_hello(widget: *c.GtkWidget, data: c.gpointer) void {
+pub fn print_hello(widget: *c.GtkWidget, data: c.gpointer) callconv(.C) void {
     _ = widget;
     _ = data;
 

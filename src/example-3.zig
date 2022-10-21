@@ -35,14 +35,14 @@ pub fn _g_signal_connect_swapped(
     );
 }
 
-pub fn print_hello(widget: *c.GtkWidget, data: c.gpointer) void {
+pub fn print_hello(widget: *c.GtkWidget, data: c.gpointer) callconv(.C) void {
     _ = widget;
     _ = data;
 
     c.g_print("Hello World\n");
 }
 
-pub fn quit_cb(window: *c.GtkWindow) void {
+pub fn quit_cb(window: *c.GtkWindow) callconv(.C) void {
     c.gtk_window_close(window);
 }
 
@@ -54,7 +54,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     defer c.g_object_unref(builder);
 
     var window: *c.GObject = c.gtk_builder_get_object(builder, "window");
-    c.gtk_window_set_application(@ptrCast(*c.GtkWindow, &window), app);
+    c.gtk_window_set_application(@ptrCast(*c.GtkWindow, window), app);
 
     var button: *c.GObject = c.gtk_builder_get_object(builder, "button1");
     // using reimplementation
@@ -68,17 +68,17 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     // using reimplementation
     _ = _g_signal_connect_swapped(button, "clicked", @ptrCast(c.GCallback, &quit_cb), window);
 
-    c.gtk_widget_show(@ptrCast(*c.GtkWidget, &window));
+    c.gtk_widget_show(@ptrCast(*c.GtkWidget, window));
 }
 
 pub fn main() !void {
-    var app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
+    const app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
     defer c.g_object_unref(app);
 
     // using reimplementation
     _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, &activate), null);
 
-    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, &app), 0, null);
+    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, app), 0, null);
     if (status != 0)
         return error.Error;
 }

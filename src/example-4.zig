@@ -64,7 +64,7 @@ pub fn clear_surface() void {
     c.cairo_destroy(cr);
 }
 
-pub fn resize_cb(widget: *c.GtkWidget, width: c_int, height: c_int, data: c.gpointer) void {
+pub fn resize_cb(widget: *c.GtkWidget, width: c_int, height: c_int, data: c.gpointer) callconv(.C) void {
     _ = width;
     _ = height;
     _ = data;
@@ -92,7 +92,7 @@ pub fn draw_cb(
     width: c_int,
     height: c_int,
     data: c.gpointer,
-) void {
+) callconv(.C) void {
     _ = drawing_area;
     _ = width;
     _ = height;
@@ -113,7 +113,7 @@ pub fn draw_brush(widget: *c.GtkWidget, x: f64, y: f64) void {
     c.gtk_widget_queue_draw(widget);
 }
 
-pub fn drag_begin(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) void {
+pub fn drag_begin(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) callconv(.C) void {
     _ = gesture;
 
     start_x = x;
@@ -122,19 +122,19 @@ pub fn drag_begin(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget
     draw_brush(area, x, y);
 }
 
-pub fn drag_update(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) void {
+pub fn drag_update(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) callconv(.C) void {
     _ = gesture;
 
     draw_brush(area, start_x + x, start_y + y);
 }
 
-pub fn drag_end(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) void {
+pub fn drag_end(gesture: *c.GtkGestureDrag, x: f64, y: f64, area: *c.GtkWidget) callconv(.C) void {
     _ = gesture;
 
     draw_brush(area, start_x + x, start_y + y);
 }
 
-pub fn pressed(gesture: *c.GtkGestureDrag, n_press: i16, x: f64, y: f64, area: *c.GtkWidget) void {
+pub fn pressed(gesture: *c.GtkGestureDrag, n_press: i16, x: f64, y: f64, area: *c.GtkWidget) callconv(.C) void {
     _ = gesture;
     _ = n_press;
     _ = x;
@@ -144,7 +144,7 @@ pub fn pressed(gesture: *c.GtkGestureDrag, n_press: i16, x: f64, y: f64, area: *
     c.gtk_widget_queue_draw(area);
 }
 
-pub fn close_window() void {
+pub fn close_window() callconv(.C) void {
     if (surface != null)
         c.cairo_surface_destroy(surface);
 }
@@ -153,7 +153,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = user_data;
 
     var window: *c.GtkWidget = c.gtk_application_window_new(app);
-    c.gtk_window_set_title(@ptrCast(*c.GtkWindow, &window), "Drawing Area");
+    c.gtk_window_set_title(@ptrCast(*c.GtkWindow, window), "Drawing Area");
 
     _ = _g_signal_connect(window, "destroy", @ptrCast(c.GCallback, &close_window), null);
 
@@ -194,13 +194,13 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
 }
 
 pub fn main() !void {
-    var app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
+    const app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
     defer c.g_object_unref(app);
 
     // using reimplementation
     _ = _g_signal_connect(app, "activate", @ptrCast(c.GCallback, &activate), null);
 
-    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, &app), 0, null);
+    const status: c_int = c.g_application_run(@ptrCast(*c.GApplication, app), 0, null);
     if (status != 0)
         return error.Error;
 }
