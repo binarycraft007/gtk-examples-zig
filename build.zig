@@ -33,6 +33,10 @@ pub fn build(b: *std.build.Builder) void {
     example1.setTarget(target);
     example1.setBuildMode(mode);
     example1.install();
+    example1.addPackage(.{
+        .name = "gtk",
+        .source = pkgPath("libs/gtk.zig"),
+    });
 
     const example2 = b.addExecutable("example-2", "src/example-2.zig");
     example2.linkSystemLibrary("gtk4");
@@ -40,6 +44,10 @@ pub fn build(b: *std.build.Builder) void {
     example2.setTarget(target);
     example2.setBuildMode(mode);
     example2.install();
+    example2.addPackage(.{
+        .name = "gtk",
+        .source = pkgPath("libs/gtk.zig"),
+    });
 
     const example3 = b.addExecutable("example-3", "src/example-3.zig");
     example3.linkSystemLibrary("gtk4");
@@ -47,6 +55,10 @@ pub fn build(b: *std.build.Builder) void {
     example3.setTarget(target);
     example3.setBuildMode(mode);
     example3.install();
+    example3.addPackage(.{
+        .name = "gtk",
+        .source = pkgPath("libs/gtk.zig"),
+    });
 
     const example4 = b.addExecutable("example-4", "src/example-4.zig");
     example4.linkSystemLibrary("gtk4");
@@ -54,6 +66,10 @@ pub fn build(b: *std.build.Builder) void {
     example4.setTarget(target);
     example4.setBuildMode(mode);
     example4.install();
+    example4.addPackage(.{
+        .name = "gtk",
+        .source = pkgPath("libs/gtk.zig"),
+    });
 
     const run_cmd_0 = example0.run();
     run_cmd_0.step.dependOn(b.getInstallStep());
