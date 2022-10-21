@@ -1,5 +1,10 @@
 const std = @import("std");
 
+fn pkgPath(comptime out: []const u8) std.build.FileSource {
+    const outpath = comptime std.fs.path.dirname(@src().file).? ++ std.fs.path.sep_str ++ out;
+    return .{ .path = outpath };
+}
+
 pub fn build(b: *std.build.Builder) void {
     // Standard target options allows the person running `zig build` to choose
     // what target to build for. Here we do not override the defaults, which
@@ -17,6 +22,10 @@ pub fn build(b: *std.build.Builder) void {
     example0.setTarget(target);
     example0.setBuildMode(mode);
     example0.install();
+    example0.addPackage(.{
+        .name = "gtk",
+        .source = pkgPath("libs/gtk.zig"),
+    });
 
     const example1 = b.addExecutable("example-1", "src/example-1.zig");
     example1.linkSystemLibrary("gtk4");
