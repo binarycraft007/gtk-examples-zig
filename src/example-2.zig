@@ -19,19 +19,14 @@ pub fn activate(app: *gtk.GtkApplication, user_data: gtk.gpointer) void {
     gtk.gtk_window_set_child(@ptrCast(*gtk.GtkWindow, window), grid);
 
     var button = gtk.gtk_button_new_with_label("Button 1");
-    // using reimplementation
     _ = gtk.g_signal_connect(button, "clicked", @ptrCast(gtk.GCallback, &print_hello), null);
-
     gtk.gtk_grid_attach(@ptrCast(*gtk.GtkGrid, grid), button, 0, 0, 1, 1);
 
     button = gtk.gtk_button_new_with_label("Button 2");
-    // using reimplementation
     _ = gtk.g_signal_connect(button, "clicked", @ptrCast(gtk.GCallback, &print_hello), null);
-
     gtk.gtk_grid_attach(@ptrCast(*gtk.GtkGrid, grid), button, 1, 0, 1, 1);
 
     button = gtk.gtk_button_new_with_label("Quit");
-    // using reimplementation
     _ = gtk.g_signal_connect_swapped(
         button,
         "clicked",
@@ -48,10 +43,9 @@ pub fn main() !void {
     const app = gtk.gtk_application_new("org.gtk.example", gtk.G_APPLICATION_FLAGS_NONE);
     defer gtk.g_object_unref(app);
 
-    // using reimplementation
     _ = gtk.g_signal_connect(app, "activate", @ptrCast(gtk.GCallback, &activate), null);
 
-    const status: c_int = gtk.g_application_run(@ptrCast(*gtk.GApplication, app), 0, null);
+    const status = gtk.g_application_run(@ptrCast(*gtk.GApplication, app), 0, null);
     if (status != 0)
         return error.Error;
 }

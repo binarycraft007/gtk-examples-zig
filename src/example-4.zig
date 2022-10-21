@@ -58,7 +58,11 @@ pub fn draw_cb(
     gtk.cairo_paint(cr);
 }
 
-pub fn draw_brush(widget: *gtk.GtkWidget, x: f64, y: f64) void {
+pub fn draw_brush(
+    widget: *gtk.GtkWidget,
+    x: f64,
+    y: f64,
+) void {
     const cr: ?*gtk.cairo_t = gtk.cairo_create(surface);
 
     gtk.cairo_rectangle(cr, x - 3, y - 3, 6, 6);
@@ -129,15 +133,15 @@ pub fn close_window() callconv(.C) void {
 pub fn activate(app: *gtk.GtkApplication, user_data: gtk.gpointer) void {
     _ = user_data;
 
-    var window: *gtk.GtkWidget = gtk.gtk_application_window_new(app);
+    var window = gtk.gtk_application_window_new(app);
     gtk.gtk_window_set_title(@ptrCast(*gtk.GtkWindow, window), "Drawing Area");
 
     _ = gtk.g_signal_connect(window, "destroy", @ptrCast(gtk.GCallback, &close_window), null);
 
-    var frame: *gtk.GtkWidget = gtk.gtk_frame_new(null);
+    var frame = gtk.gtk_frame_new(null);
     gtk.gtk_window_set_child(@ptrCast(*gtk.GtkWindow, window), frame);
 
-    var drawing_area: *gtk.GtkWidget = gtk.gtk_drawing_area_new();
+    var drawing_area = gtk.gtk_drawing_area_new();
     gtk.gtk_widget_set_size_request(drawing_area, 100, 100);
 
     gtk.gtk_frame_set_child(@ptrCast(*gtk.GtkFrame, frame), drawing_area);
@@ -149,22 +153,19 @@ pub fn activate(app: *gtk.GtkApplication, user_data: gtk.gpointer) void {
         null,
     );
 
-    // using reimplementation
     _ = gtk.g_signal_connect_after(drawing_area, "resize", @ptrCast(gtk.GCallback, &resize_cb), null);
 
-    var drag: ?*gtk.GtkGesture = gtk.gtk_gesture_drag_new();
+    var drag = gtk.gtk_gesture_drag_new();
     gtk.gtk_gesture_single_set_button(@ptrCast(*gtk.GtkGestureSingle, drag), gtk.GDK_BUTTON_PRIMARY);
     gtk.gtk_widget_add_controller(drawing_area, @ptrCast(*gtk.GtkEventController, drag));
-    // using reimplementation
     _ = gtk.g_signal_connect(drag, "drag-begin", @ptrCast(gtk.GCallback, &drag_begin), drawing_area);
     _ = gtk.g_signal_connect(drag, "drag-update", @ptrCast(gtk.GCallback, &drag_update), drawing_area);
     _ = gtk.g_signal_connect(drag, "drag-end", @ptrCast(gtk.GCallback, &drag_end), drawing_area);
 
-    var press: ?*gtk.GtkGesture = gtk.gtk_gesture_click_new();
+    var press = gtk.gtk_gesture_click_new();
     gtk.gtk_gesture_single_set_button(@ptrCast(*gtk.GtkGestureSingle, press), gtk.GDK_BUTTON_SECONDARY);
     gtk.gtk_widget_add_controller(drawing_area, @ptrCast(*gtk.GtkEventController, press));
 
-    // using reimplementation
     _ = gtk.g_signal_connect(press, "pressed", @ptrCast(gtk.GCallback, &pressed), drawing_area);
 
     gtk.gtk_widget_show(window);
@@ -174,10 +175,9 @@ pub fn main() !void {
     const app = gtk.gtk_application_new("org.gtk.example", gtk.G_APPLICATION_FLAGS_NONE);
     defer gtk.g_object_unref(app);
 
-    // using reimplementation
     _ = gtk.g_signal_connect(app, "activate", @ptrCast(gtk.GCallback, &activate), null);
 
-    const status: c_int = gtk.g_application_run(@ptrCast(*gtk.GApplication, app), 0, null);
+    const status = gtk.g_application_run(@ptrCast(*gtk.GApplication, app), 0, null);
     if (status != 0)
         return error.Error;
 }
