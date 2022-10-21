@@ -152,15 +152,15 @@ pub fn close_window() void {
 pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = user_data;
 
-    const window: *c.GtkWidget = c.gtk_application_window_new(app);
+    var window: *c.GtkWidget = c.gtk_application_window_new(app);
     c.gtk_window_set_title(@ptrCast(*c.GtkWindow, &window), "Drawing Area");
 
     _ = _g_signal_connect(window, "destroy", @ptrCast(c.GCallback, &close_window), null);
 
-    const frame: *c.GtkWidget = c.gtk_frame_new(null);
+    var frame: *c.GtkWidget = c.gtk_frame_new(null);
     c.gtk_window_set_child(@ptrCast(*c.GtkWindow, window), frame);
 
-    const drawing_area: *c.GtkWidget = c.gtk_drawing_area_new();
+    var drawing_area: *c.GtkWidget = c.gtk_drawing_area_new();
     c.gtk_widget_set_size_request(drawing_area, 100, 100);
 
     c.gtk_frame_set_child(@ptrCast(*c.GtkFrame, frame), drawing_area);
@@ -175,7 +175,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     // using reimplementation
     _ = _g_signal_connect_after(drawing_area, "resize", @ptrCast(c.GCallback, &resize_cb), null);
 
-    const drag: ?*c.GtkGesture = c.gtk_gesture_drag_new();
+    var drag: ?*c.GtkGesture = c.gtk_gesture_drag_new();
     c.gtk_gesture_single_set_button(@ptrCast(*c.GtkGestureSingle, drag), c.GDK_BUTTON_PRIMARY);
     c.gtk_widget_add_controller(drawing_area, @ptrCast(*c.GtkEventController, drag));
     // using reimplementation
@@ -183,7 +183,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = _g_signal_connect(drag, "drag-update", @ptrCast(c.GCallback, &drag_update), drawing_area);
     _ = _g_signal_connect(drag, "drag-end", @ptrCast(c.GCallback, &drag_end), drawing_area);
 
-    const press: ?*c.GtkGesture = c.gtk_gesture_click_new();
+    var press: ?*c.GtkGesture = c.gtk_gesture_click_new();
     c.gtk_gesture_single_set_button(@ptrCast(*c.GtkGestureSingle, press), c.GDK_BUTTON_SECONDARY);
     c.gtk_widget_add_controller(drawing_area, @ptrCast(*c.GtkEventController, press));
 
@@ -194,7 +194,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
 }
 
 pub fn main() !void {
-    const app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
+    var app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
     defer c.g_object_unref(app);
 
     // using reimplementation

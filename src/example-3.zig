@@ -53,7 +53,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = c.gtk_builder_add_from_file(builder, "src/builder.ui", null);
     defer c.g_object_unref(builder);
 
-    const window: *c.GObject = c.gtk_builder_get_object(builder, "window");
+    var window: *c.GObject = c.gtk_builder_get_object(builder, "window");
     c.gtk_window_set_application(@ptrCast(*c.GtkWindow, &window), app);
 
     var button: *c.GObject = c.gtk_builder_get_object(builder, "button1");
@@ -72,7 +72,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
 }
 
 pub fn main() !void {
-    const app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
+    var app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
     defer c.g_object_unref(app);
 
     // using reimplementation

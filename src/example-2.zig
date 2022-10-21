@@ -44,7 +44,7 @@ pub fn print_hello(widget: *c.GtkWidget, data: c.gpointer) void {
 pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
     _ = user_data;
 
-    const window: *c.GtkWidget = c.gtk_application_window_new(app);
+    var window: *c.GtkWidget = c.gtk_application_window_new(app);
     c.gtk_window_set_title(@ptrCast(*c.GtkWindow, &window), "Window");
 
     const grid: *c.GtkWidget = c.gtk_grid_new();
@@ -78,7 +78,7 @@ pub fn activate(app: *c.GtkApplication, user_data: c.gpointer) void {
 }
 
 pub fn main() !void {
-    const app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
+    var app = c.gtk_application_new("org.gtk.example", c.G_APPLICATION_FLAGS_NONE);
     defer c.g_object_unref(app);
 
     // using reimplementation
